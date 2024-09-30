@@ -27,7 +27,7 @@
 
     handle_path /ethereum/wallet/* {
         uri strip_prefix /ethereum/wallet
-        reverse_proxy pepper-token-list-production.up.railway.app {
+        reverse_proxy wallet-api-ethereum.railway.internal {
             header_up Host {host}
             header_up X-Real-IP {remote_host}
         }
