@@ -16,6 +16,14 @@
         format console # set access log format to console mode
     }
 
+    handle_path /token-list/* {
+        uri strip_prefix /token-list
+        reverse_proxy token-list.railway.internal {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+        }
+    }
+
     # Chain ID 1 routes (Ethereum)
     handle_path /ethereum/router/* {
         uri strip_prefix /ethereum/router
