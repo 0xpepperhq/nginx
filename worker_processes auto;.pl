@@ -10,29 +10,28 @@ http {
     sendfile        on;
     keepalive_timeout  65;
 
-    upstream router_ethereum {
-        server router-api-ethereum; # Internal URL for Ethereum router
+    upstream service_1 {
+        server service_1.railway.internal; # Internal URL for service_1
     }
 
-    upstream wallet_ethereum {
-        server wallet-api-ethereum; # Internal URL for Ethereum wallet
+    upstream service_2 {
+        server service_2-ethereum.railway.internal; # Internal URL for service_2
     }
 
-    upstream router_base {
-        server router-api-base; # Internal URL for Base chain router
+    upstream service_3 {
+        server service_3.railway.internal; # Internal URL for service_3
     }
 
-    upstream wallet_base {
-        server allet-api-base; # Internal URL for Base chain wallet
+    upstream service_4 {
+        server wallet-api-base.railway.internal; # Internal URL for service_4
     }
 
     server {
         listen 80;
         server_name api.0xpepper.com;
 
-        # Chain ID 1 routes (Ethereum)
-        location /ethereum/router {
-            proxy_pass http://router_ethereum;
+        location /service_1 {
+            proxy_pass http://service_1;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
