@@ -1,0 +1,65 @@
+
+{
+    admin off # theres no need for the admin api in railway's environment
+    persist_config off # storage isn't persistent anyway
+    auto_https off # railway handles https for us, this would cause issues if left enabled
+    log { # runtime logs
+        format console # set runtime log format to console mode 
+    }
+    servers { # server options
+        trusted_proxies static private_ranges # trust railway's proxy
+    }
+}
+
+api.0xpepper.com {
+    log { # access logs
+        format console # set access log format to console mode
+    }
+
+    # Chain ID 1 routes (Ethereum)
+    handle_path /ethereum/router/* {
+        uri strip_prefix /ethereum/router
+        reverse_proxy router-api-ethereum.railway.internal {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    handle_path /ethereum/wallet/* {
+        uri strip_prefix /ethereum/wallet
+        reverse_proxy wallet-api-ethereum.railway.internal {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Chain ID 8453 routes (Base)
+    handle_path /base/router/* {
+        uri strip_prefix /base/router
+        reverse_proxy router-api-base.railway.internal {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    handle_path /base/wallet/* {
+        uri strip_prefix /base/wallet
+        reverse_proxy wallet-api-base.railway.internal {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # Default route to return 404 for undefined paths
+    handle {
+        respond 404
+    }
+}
